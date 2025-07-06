@@ -1,0 +1,36 @@
+# Ignore virtual environment
+venv/
+.venv/
+
+# Ignore dotenv files
+.env
+.env.*
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Jupyter and IPython files
+.ipynb_checkpoints/
+
+# macOS & Windows hidden files
+.DS_Store
+Thumbs.db
+
+# VS Code settings
+.vscode/
+
+# Streamlit file cache
+.streamlit/
+
+# FAISS indexes (optional if you serialize)
+*.faiss
+
+# Ignore log files
+*.log
+
+# Ignore pipenv or poetry lock files (optional)
+Pipfile.lock
+poetry.lock
