@@ -1,15 +1,5 @@
 # unstructured_data_analysis
-
----
-
-Preferred to use a **virtual environment** (like `.venv`) to avoid dependency conflicts.
-
-You can ask ChatGPT for help setting it up:
-
-> "How do I create and activate a virtual environment in Python?"
-
----
-
+preferred to use virtual environment, as i have used .env ,  i have provided the groq api key within the code . You can use that or if you want to change you can do that also
 ### 🚀 How to Run
 
 ```bash

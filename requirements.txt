@@ -6,3 +6,14 @@ langchain-community
 langchain-groq
 langchain-huggingface
 sentence-transformers
+
+# === NLP Libraries ===
+textblob
+spacy
+nltk
+
+# === Visualization ===
+matplotlib
+wordcloud
+plotly
+seaborn
