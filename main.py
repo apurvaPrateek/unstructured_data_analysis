@@ -3,7 +3,7 @@ import pandas as pd
 from io import StringIO
 from backend.file_processing import extract_text_from_pdf, extract_text_from_txt
 from backend.qa_pipeline import (
-    process_text, build_vectorstore, answer_question, summarize_text, get_sentiment
+    process_text, build_vectorstore, build_conversational_chain, summarize_text, get_sentiment
 )
 
 from backend.insight_extraction import (
@@ -24,6 +24,7 @@ if "text_data" not in st.session_state:
 
 if "knowledge_base" not in st.session_state:
     st.session_state.knowledge_base = None
+    
 
 # -------------------- File Upload -------------------- #
 uploaded_file = st.file_uploader("📂 Upload a PDF or TXT file", type=["pdf", "txt"])
@@ -40,7 +41,6 @@ if uploaded_file:
         st.stop()
 
     st.session_state.text_data = text
-
     st.success("✅ File successfully loaded!")
 
     # -------------------- Insights -------------------- #
@@ -93,6 +93,8 @@ if uploaded_file:
             fig = generate_wordcloud(text)
             st.pyplot(fig)
 
+
+
     # -------------------- Summary -------------------- #
     if st.button("🪄 Generate Summary"):
         with st.spinner("Summarizing..."):
@@ -109,21 +111,25 @@ if st.session_state.knowledge_base:
     st.markdown("---")
     st.subheader("💬 Ask Questions from the Document")
 
-    user_question = st.text_input("Type your question here:")
+    if "conversation_chain" not in st.session_state:
+        st.session_state.conversation_chain = build_conversational_chain(st.session_state.knowledge_base)
 
-    if st.button("Ask"):
-        if user_question:
-            with st.spinner("Thinking..."):
-                answer = answer_question(st.session_state.knowledge_base, user_question)
-            st.session_state.chat_history.append(("You", user_question))
-            st.session_state.chat_history.append(("AI", answer))
+    user_input = st.chat_input("Type your question here:")
+
+    # if st.button("Ask"):
+    if user_input:
+        with st.spinner("Thinking..."):
+            result = st.session_state.conversation_chain.run(user_input)
+        st.session_state.chat_history.append(("You", user_input))
+        st.session_state.chat_history.append(("AI", result))
 
     for sender, message in st.session_state.chat_history:
         if sender == "You":
-            st.markdown(f"**🧑 You:** {message}")
+            st.chat_message("user").markdown(f"**You:** {message}")
         else:
-            st.markdown(f"**🤖 AI:** {message}")
+            st.chat_message("AI").markdown(f"**AI:** {message}")
 
     if st.button("🧹 Clear Chat"):
         st.session_state.chat_history = []
+        st.session_state.conversation_chain.memory.clear()
         st.rerun()
